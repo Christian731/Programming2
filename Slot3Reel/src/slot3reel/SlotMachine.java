@@ -2,6 +2,7 @@ package slot3reel;
 
 import MyUtil.MyScanner;
 import java.util.Scanner;
+import jdk.nashorn.internal.ir.BreakNode;
 
 /**
  *
@@ -37,13 +38,19 @@ public class SlotMachine {
      *
      */
     public void play() {
-        MyScanner input = new MyScanner();
-        if (totalSpins == 0) {
-            intro();
-        } else {
-            System.out.println("Welcome back!");
+//        if (totalSpins == 0) {
+//            intro();
+//        } else {
+//            System.out.println("Welcome back!");
+//        }
+
+        intro();
+        int x;
+        
+        while (currentBet != 0) {
+            validateBet();
+            
         }
-        input.readInt();
         finalGreetingsMessage();
     }
 
@@ -94,10 +101,11 @@ public class SlotMachine {
     /**
      * method that ask the user for a bet
      */
-    private void readBet() {
+    private int readBet() {
         MyUtil.MyScanner console = new MyScanner();
         System.out.printf("\n%d\n%s", credit(), "How many coins do you want to bet (0 to quit)");
         currentBet = console.readInt();
+        return currentBet;
     }
 
     /**
@@ -136,7 +144,7 @@ public class SlotMachine {
      * @return whether it is a valid bet or not
      */
     private boolean validateBet() {
-        return currentBet <= 0 || currentBet > credit();
+        return currentBet < 0 || currentBet > credit();
     }
 
     /**
@@ -145,8 +153,8 @@ public class SlotMachine {
      * @return if it is a triple
      */
     private boolean isTriple() {
-        return reel.getPayline()[1].equals(reel.getPayline()[2])
-                && reel.getPayline()[1].equals(reel.getPayline()[3]);
+        return reel.get(0).equals(reel.get(1))
+                && reel.get(0).equals(reel.get(2));
     }
 
     /**
@@ -156,10 +164,10 @@ public class SlotMachine {
      * @return if it is a left double
      */
     private boolean isLeftDouble() {
-        return (reel.getPayline()[1].equals(reel.getPayline()[2])
-                && !(reel.getPayline()[1].equals(reel.getPayline()[3])))
-                || (reel.getPayline()[1].equals(reel.getPayline()[3])
-                && !(reel.getPayline()[1].equals(reel.getPayline()[2])));
+        return (reel.get(0).equals(reel.get(1))
+                && !(reel.get(0).equals(reel.get(2))))
+                || (reel.get(0).equals(reel.get(2))
+                && !(reel.get(0).equals(reel.get(1))));
     }
 
     /**
@@ -169,8 +177,8 @@ public class SlotMachine {
      * @return if it is a right-double
      */
     private boolean isRightDouble() {
-        return (reel.getPayline()[3].equals(reel.getPayline()[2])
-                && !(reel.getPayline()[1].equals(reel.getPayline()[3])));
+        return (reel.get(2).equals(reel.get(1))
+                && !(reel.get(0).equals(reel.get(2))));
     }
 
     /**
